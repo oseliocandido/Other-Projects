@@ -1,0 +1,60 @@
+Sub Dernomalize_unpivot_format_table()
+
+
+Dim tbl As ListObject
+
+novo_registro = 1
+For mes = 4 To 12
+objeto = Carteira_2030_ & mes
+
+On Error GoTo Final
+Set tbl = ActiveSheet.ListObjects(objeto)
+
+
+number_of_columns = tbl.ListColumns.Count
+number_of_sections = (number_of_columns - 5)  2
+linha_inicial_dados = tbl.Range.Cells(1, 1).Row + 1
+
+ 
+'Loop Through Every Row in Table
+  For i = linha_inicial_dados To tbl.Range.Rows.Count - 2 + linha_inicial_dados
+  
+     Data = Worksheets(Base - Clientes).Cells(i, 1).Value
+     cod_supervisor = Worksheets(Base - Clientes).Cells(i, 2).Value
+     supervisor = Worksheets(Base - Clientes).Cells(i, 3).Value
+     cod_rca = Worksheets(Base - Clientes).Cells(i, 4).Value
+     rca = Worksheets(Base - Clientes).Cells(i, 5).Value
+     rca_exclusive = Worksheets(Base - Clientes).Cells(i, 6).Value
+     
+     For j = 7 To number_of_columns - 1 Step 2
+        meta_financeira = Cells(i, j).Value
+        meta_cobertura = Cells(i, j + 1).Value
+        
+        Worksheets(Output).Cells(1 + novo_registro, 1).Value = Data
+        Worksheets(Output).Cells(1 + novo_registro, 2).Value = cod_supervisor
+        Worksheets(Output).Cells(1 + novo_registro, 3).Value = supervisor
+        Worksheets(Output).Cells(1 + novo_registro, 4).Value = cod_rca
+        Worksheets(Output).Cells(1 + novo_registro, 5).Value = rca
+        Worksheets(Output).Cells(1 + novo_registro, 6).Value = rca_exclusive
+            
+        Worksheets(Output).Cells(1 + novo_registro, 7).Value = meta_financeira
+        Worksheets(Output).Cells(1 + novo_registro, 8).Value = meta_cobertura
+    
+       'Seção
+        Worksheets(Output).Cells(1 + novo_registro, 9).Value = Worksheets(Base - Clientes).Cells(linha_inicial_dados - 2, j).Value
+        novo_registro = novo_registro + 1
+     Next j
+
+  Next i
+  Next mes
+Final
+
+'Remover tabela e criar nova tabela
+Worksheets(Output).ListObjects(Output).Unlist
+last_row = Worksheets(Output).Cells(Rows.Count, 1).End(xlUp).Row
+Set Rng = Worksheets(Output).Range(a1i & last_row)
+
+Worksheets(Output).Activate
+ActiveSheet.ListObjects.Add(xlSrcRange, Rng, xlYes).Name = Output
+End Sub
+
